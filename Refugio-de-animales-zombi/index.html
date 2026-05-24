@@ -3,115 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Z-Shelter: Refugio de Animales Post-Apocalíptico</title>
-    <!-- Tailwind CSS CDN para estilar rápido mediante clases -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Z-SHELTER // Panel de Control de Supervivencia</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col">
+<body>
 
-    <!-- 1. EL PANEL DE CONTROL DEL REFUGIO (HEADER) -->
-    <header class="bg-gray-800 border-b border-red-900 p-4 shadow-md">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <span class="text-3xl">🧟🐾</span>
-                <h1 class="text-2xl font-bold tracking-wider text-red-500 uppercase">Z-Shelter</h1>
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <div class="status-indicator">
+                    <span class="ping"></span>
+                    <span class="dot"></span>
+                </div>
+                <div>
+                    <h1>Z-SHELTER // OS v2.6</h1>
+                    <p class="subtitle">Protocolo de contención biológica</p>
+                </div>
             </div>
             
-            <!-- Contadores de Recursos Globales -->
-            <div class="flex gap-6 text-lg font-semibold bg-gray-950 p-2 rounded-lg px-4 border border-gray-700">
-                <div>📅 Día: <span id="contador-dias" class="text-blue-400">1</span></div>
-                <div>🍖 Comida: <span id="recurso-comida" class="text-green-400">50</span> u.</div>
-                <div>💧 Agua: <span id="recurso-agua" class="text-cyan-400">50</span> u.</div>
-                <div>⚠️ Alerta: <span id="nivel-alerta" class="text-yellow-500 font-bold">BAJA</span></div>
+            <div class="hud-resources">
+                <div class="hud-item">📅 <span class="label">DÍA:</span> <span id="contador-dias" class="value text-emerald">1</span></div>
+                <div class="hud-item">🍖 <span class="label">SUMINISTROS:</span> <span id="recurso-comida" class="value text-amber">50</span><span class="unit">uds</span></div>
+                <div class="hud-item">💧 <span class="label">H2O:</span> <span id="recurso-agua" class="value text-cyan">50</span><span class="unit">uds</span></div>
+                <div class="hud-item">🚨 <span class="label">AMENAZA:</span> <span id="nivel-alerta" class="value text-green font-bold">BAJA</span></div>
             </div>
         </div>
     </header>
 
-    <!-- CUERPO PRINCIPAL DE LA APLICACIÓN -->
-    <main class="flex-grow container mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <main class="main-content">
         
-        <!-- 2. EL PABELLÓN DE ANIMALES (Ocupa 2 columnas en pantallas grandes) -->
-        <section class="lg:col-span-2 flex flex-col gap-4">
-            <h2 class="text-xl font-bold border-b border-gray-700 pb-2 text-red-400 flex justify-between items-center">
-                <span>🐾 Animales Refugiados</span>
-                <button id="btn-pasar-dia" class="bg-red-700 hover:bg-red-600 text-white text-sm px-3 py-1 rounded font-bold uppercase transition">
-                    Pasar Día Manual ⌛
-                </button>
-            </h2>
-            
-            <!-- Contenedor dinámico donde JavaScript inyectará las tarjetas de animales -->
-            <div id="contenedor-animales" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Las tarjetas se generarán dinámicamente desde el JS, aquí dejamos un ejemplo comentado -->
-                <!-- 
-                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-yellow-400">Max (Pastor Alemán)</h3>
-                            <span class="bg-green-900 text-green-300 text-xs px-2 py-0.5 rounded-full font-semibold">En Refugio</span>
-                        </div>
-                        <div class="space-y-1 text-sm text-gray-300">
-                            <div>❤️ Salud: <span class="font-bold text-green-400">100/100</span></div>
-                            <div>⚡ Energía: <span class="font-bold text-yellow-400">80/100</span></div>
-                        </div>
-                    </div>
-                    <div class="flex gap-2 mt-4">
-                        <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-xs py-1.5 rounded font-medium">🍖 Alimentar</button>
-                        <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-xs py-1.5 rounded font-medium">💧 Hidratar</button>
-                    </div>
-                </div> 
-                -->
+        <section class="pabellon-section">
+            <div class="section-header">
+                <div>
+                    <h2>🗃️ BIOMASA ASIGNADA IN-SITU</h2>
+                    <p class="section-subtitle">Gestión de constantes vitales de los especímenes del refugio</p>
+                </div>
+                <button id="btn-pasar-dia" class="btn-pasar-dia">Siguiente Ciclo [⌛]</button>
             </div>
+            
+            <div id="contenedor-animales" class="animales-grid">
+                </div>
         </section>
 
-        <!-- 3. EL TABLÓN DE MISIONES DE EXPLORACIÓN + REGISTRO -->
-        <section class="flex flex-col gap-6">
+        <section class="sidebar-section">
             
-            <!-- PANEL DE EXPOSICIÓN / MISIONES -->
-            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow flex flex-col gap-4">
-                <h2 class="text-xl font-bold text-red-400 border-b border-gray-700 pb-2">🚀 Misiones de Exploración</h2>
+            <div class="panel-card panel-misiones">
+                <div class="panel-header-deco line-emerald"></div>
+                <h2>🛰️ LOGÍSTICA EXTRACCIÓN</h2>
+                <p class="panel-subtitle">Despliegue de unidades en zonas de exclusión contaminadas</p>
                 
-                <form id="formulario-mision" class="space-y-4">
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">Seleccionar Explorador:</label>
-                        <select id="select-animal-mision" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-gray-200 focus:outline-none focus:border-red-500">
-                            <!-- Se rellenará con JavaScript con los animales disponibles -->
-                            <option value="">-- Elige un animal --</option>
+                <form id="formulario-mision" class="mision-form">
+                    <div class="form-group">
+                        <label>Asignar Operativo:</label>
+                        <select id="select-animal-mision">
+                            <option value="">-- SELECCIONAR UNIDAD --</option>
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-sm text-gray-400 mb-1">Zona de Destino:</label>
-                        <select id="select-zona-mision" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-gray-200 focus:outline-none focus:border-red-500">
-                            <option value="supermercado">🏪 Supermercado Abandonado (Riesgo Bajo)</option>
-                            <option value="farmacia">💊 Farmacia de la Ciudad (Riesgo Medio)</option>
-                            <option value="base-militar">🪖 Base Militar Perimetral (Riesgo Alto)</option>
+                    <div class="form-group">
+                        <label>Vector de Inserción:</label>
+                        <select id="select-zona-mision">
+                            <option value="supermercado">🏪 SUPERMERCADO ABANDONADO [RIESGO: BAJO]</option>
+                            <option value="farmacia">💊 RED DE FARMACIAS URBANA [RIESGO: MEDIO]</option>
+                            <option value="base-militar">🪖 PERÍMETRO BASE MILITAR [RIESGO: CRÍTICO]</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2 rounded text-sm uppercase tracking-wider transition">
-                        Enviar a Explorar
-                    </button>
+                    <button type="submit" class="btn-submit-mision">AUTORIZAR INSERCIÓN 🚀</button>
                 </form>
             </div>
 
-            <!-- 4. EL LOG / HISTORIAL DE SUCESOS -->
-            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow flex flex-col flex-grow min-h-[250px]">
-                <h2 class="text-xl font-bold text-red-400 border-b border-gray-700 pb-2 mb-2">📜 Registro de Sucesos</h2>
-                <!-- Contenedor con scroll para los mensajes del sistema -->
-                <div id="log-sucesos" class="flex-grow overflow-y-auto max-h-[300px] text-xs font-mono space-y-1.5 text-gray-400 pr-2">
-                    <p class="text-gray-500">[Sistema] Sistema de defensa en línea. Refugio operativo.</p>
+            <div class="panel-card panel-logs">
+                <div class="panel-header-deco line-red"></div>
+                <h2>📟 LOG_SISTEMA.LOG</h2>
+                <p class="panel-subtitle">Monitorización de eventos del entorno y alertas locales</p>
+                
+                <div class="terminal-body">
+                    <div id="log-sucesos" class="log-container">
+                        <p class="log-sys">[INFO] Inicializando núcleos core_shelter...</p>
+                        <p class="log-sys">[INFO] Conexión establecida con la red biológica.</p>
+                    </div>
                 </div>
             </div>
 
         </section>
     </main>
 
-    <!-- PIE DE PÁGINA (FOOTER) -->
-    <footer class="bg-gray-950 text-center py-3 text-xs text-gray-500 border-t border-gray-800">
-        Desarrollado por <span class="text-gray-400 font-medium">Tu Nombre</span> - Junior DAM Porfolio
+    <footer class="main-footer">
+        Z-SHELTER MAINFRAME // SECURE ENVIRONMENT // JUNIOR DAM PORTFOLIO
     </footer>
 
-    <!-- Vinculación del script principal de lógica de la app -->
     <script src="app.js"></script>
 </body>
 </html>
