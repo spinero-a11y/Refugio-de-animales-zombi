@@ -1,0 +1,178 @@
+class Animal {
+    constructor(id, nombre, especie, icono) {
+        this.id = id;
+        this.nombre = nombre;
+        this.especie = especie;
+        this.icono = icono;
+        this.salud = 100;      // Máximo 100
+        this.energia = 100;    // Máximo 100
+        this.estado = "En Refugio"; // "En Refugio" o "Explorando"
+    }
+
+    // Método para simular el desgaste diario
+    desgasteDiario() {
+        this.energia -= 15;
+        if (this.energia <= 0) {
+            this.energia = 0;
+            this.salud -= 20; // Si no tiene energía, empieza a perder salud
+        }
+        if (this.salud <= 0) this.salud = 0;
+    }
+
+    // Método para alimentar al animal
+    alimentar() {
+        if (this.salud > 0) {
+            this.salud = Math.min(100, this.salud + 15);
+            this.energia = Math.min(100, this.energia + 10);
+            return true;
+        }
+        return false;
+    }
+
+    // Método para hidratar al animal
+    hidratar() {
+        if (this.salud > 0) {
+            this.energia = Math.min(100, this.energia + 25);
+            return true;
+        }
+        return false;
+    }
+}
+// Estado del refugio
+const refugio = {
+    dia: 1,
+    comida: 50,
+    agua: 50,
+    alerta: "BAJA"
+};
+
+// Nuestro "banco de datos" con instancias de la clase Animal
+const listaAnimales = [
+    new Animal(1, "Max", "Pastor Alemán", "🐕"),
+    new Animal(2, "Bigotes", "Gato Callejero", "🐈"),
+    new Animal(3, "Simba", "León de Zoo", "🦁"),
+    new Animal(4, "Coco", "Loro Inteligente", "🦜")
+];
+const domDias = document.getElementById("contador-dias");
+const domComida = document.getElementById("recurso-comida");
+const domAgua = document.getElementById("recurso-agua");
+const domAlerta = document.getElementById("nivel-alerta");
+const domContenedor = document.getElementById("contenedor-animales");
+const domSelectAnimal = document.getElementById("select-animal-mision");
+const domFormMision = document.getElementById("formulario-mision");
+const domLog = document.getElementById("log-sucesos");
+const domBtnPasarDia = document.getElementById("btn-pasar-dia");
+// Actualiza los marcadores superiores
+function actualizarMarcadores() {
+    domDias.textContent = refugio.dia;
+    domComida.textContent = refugio.comida;
+    domAgua.textContent = refugio.agua;
+    domAlerta.textContent = refugio.alerta;
+    
+    // Cambiar color de la alerta según el nivel
+    domAlerta.className = refugio.alerta === "ALTA" ? "text-red-500 font-bold" : 
+                          refugio.alerta === "MEDIA" ? "text-yellow-500 font-bold" : "text-green-500 font-bold";
+}
+
+// Añade un mensaje a la consola inferior de la web
+function agregarLog(mensaje, tipo = "sistema") {
+    const colores = {
+        sistema: "text-gray-400",
+        exito: "text-green-400 font-semibold",
+        peligro: "text-red-400 font-semibold",
+        evento: "text-yellow-400"
+    };
+    const nuevoLog = document.createElement("p");
+    nuevoLog.className = colores[tipo];
+    nuevoLog.textContent = `[Día ${refugio.dia}] - ${mensaje}`;
+    
+    domLog.appendChild(nuevoLog);
+    domLog.scrollTop = domLog.scrollHeight; // Auto-scroll hacia abajo
+}
+
+// Dibuja las tarjetas de los animales en el HTML
+function renderizarAnimales() {
+    domContenedor.innerHTML = ""; // Limpiamos el contenedor
+    domSelectAnimal.innerHTML = '<option value="">-- Elige un animal --</option>'; // Limpiamos el select de misiones
+
+    listaAnimales.forEach(animal => {
+        // 1. Renderizar la tarjeta si el animal está vivo
+        const estaVivo = animal.salud > 0;
+        const colorTarjeta = estaVivo ? "bg-gray-800" : "bg-gray-950 opacity-50 border-red-900";
+        
+        let botonesHTML = '';
+        if (estaVivo && animal.estado === "En Refugio") {
+            botonesHTML = `
+                <div class="flex gap-2 mt-4">
+                    <button onclick="alimentarAnimal(${animal.id})" class="flex-1 bg-green-800 hover:bg-green-700 text-xs py-1.5 rounded font-medium transition">🍖 Alimentar</button>
+                    <button onclick="hidratarAnimal(${animal.id})" class="flex-1 bg-cyan-800 hover:bg-cyan-700 text-xs py-1.5 rounded font-medium transition">💧 Hidratar</button>
+                </div>`;
+        } else if (!estaVivo) {
+            botonesHTML = `<div class="text-center text-red-500 text-xs font-bold mt-4 uppercase">💀 Fallecido</div>`;
+        } else {
+            botonesHTML = `<div class="text-center text-yellow-500 text-xs font-bold mt-4 animate-pulse uppercase">🚀 Explorando...</div>`;
+        }
+
+        const tarjeta = `
+            <div class="${colorTarjeta} p-4 rounded-lg border border-gray-700 shadow flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold ${estaVivo ? 'text-yellow-400' : 'text-gray-500'}">${animal.icono} ${animal.nombre} (${animal.especie})</h3>
+                        <span class="text-xs px-2 py-0.5 rounded-full font-semibold ${animal.estado === 'En Refugio' ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'}">
+                            ${animal.estado}
+                        </span>
+                    </div>
+                    <div class="space-y-1 text-sm text-gray-300">
+                        <div>❤️ Salud: <span class="font-bold ${animal.salud > 50 ? 'text-green-400' : 'text-red-400'}">${animal.salud}/100</span></div>
+                        <div>⚡ Energía: <span class="font-bold text-yellow-400">${animal.energia}/100</span></div>
+                    </div>
+                </div>
+                ${botonesHTML}
+            </div>
+        `;
+        domContenedor.innerHTML += tarjeta;
+
+        // 2. Rellenar el selector de misiones solo si está vivo y en el refugio
+        if (estaVivo && animal.estado === "En Refugio") {
+            const opcion = document.createElement("option");
+            opcion.value = animal.id;
+            opcion.textContent = `${animal.icono} ${animal.nombre}`;
+            domSelectAnimal.appendChild(opcion);
+        }
+    });
+}
+window.alimentarAnimal = function(id) {
+    if (refugio.comida >= 1) {
+        const animal = listaAnimales.find(a => a.id === id);
+        if (animal.alimentar()) {
+            refugio.comida -= 1;
+            agregarLog(`Has alimentado a ${animal.nombre}. +15 Salud, +10 Energía.`, "sistema");
+            actualizarMarcadores();
+            renderizarAnimales();
+        }
+    } else {
+        agregarLog("¡No tienes suficiente comida en el almacén!", "peligro");
+    }
+};
+
+window.hidratarAnimal = function(id) {
+    if (refugio.agua >= 1) {
+        const animal = listaAnimales.find(a => a.id === id);
+        if (animal.hidratar()) {
+            refugio.agua -= 1;
+            agregarLog(`Has dado de beber a ${animal.nombre}. +25 Energía.`, "sistema");
+            actualizarMarcadores();
+            renderizarAnimales();
+        }
+    } else {
+        agregarLog("¡No tienes suficiente agua en el almacén!", "peligro");
+    }
+};
+function iniciarApp() {
+    actualizarMarcadores();
+    renderizarAnimales();
+    agregarLog("Refugio operativo. Los zombis acechan afuera...", "sistema");
+}
+
+// Arrancar el juego
+iniciarApp();
