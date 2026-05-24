@@ -8,9 +8,12 @@
 </head>
 <body>
 
+    <!-- BLOQUE SUPERIOR: LOGO Y HUD DE RECURSOS -->
     <header class="main-header">
         <div class="header-container">
-            <div class="logo-area">
+            
+            <!-- Bloque Identificador -->
+            <div class="logo-block">
                 <div class="status-indicator">
                     <span class="ping"></span>
                     <span class="dot"></span>
@@ -21,36 +24,69 @@
                 </div>
             </div>
             
+            <!-- Bloques Cuadrados de Recursos -->
             <div class="hud-resources">
-                <div class="hud-item">📅 <span class="label">DÍA:</span> <span id="contador-dias" class="value text-emerald">1</span></div>
-                <div class="hud-item">🍖 <span class="label">SUMINISTROS:</span> <span id="recurso-comida" class="value text-amber">50</span><span class="unit">uds</span></div>
-                <div class="hud-item">💧 <span class="label">H2O:</span> <span id="recurso-agua" class="value text-cyan">50</span><span class="unit">uds</span></div>
-                <div class="hud-item">🚨 <span class="label">AMENAZA:</span> <span id="nivel-alerta" class="value text-green font-bold">BAJA</span></div>
+                <div class="hud-card">
+                    <span class="hud-icon">📅</span>
+                    <div class="hud-data">
+                        <span class="hud-label">SISTEMA</span>
+                        <span id="contador-dias" class="hud-value text-emerald">DÍA 1</span>
+                    </div>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-icon">🍖</span>
+                    <div class="hud-data">
+                        <span class="hud-label">ALIMENTOS</span>
+                        <span id="recurso-comida" class="hud-value text-amber">50</span>
+                    </div>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-icon">💧</span>
+                    <div class="hud-data">
+                        <span class="hud-label">RESERVA H2O</span>
+                        <span id="recurso-agua" class="hud-value text-cyan">50</span>
+                    </div>
+                </div>
+                <div class="hud-card">
+                    <span class="hud-icon">🚨</span>
+                    <div class="hud-data">
+                        <span class="hud-label">AMENAZA</span>
+                        <span id="nivel-alerta" class="hud-value text-green">BAJA</span>
+                    </div>
+                </div>
             </div>
+
         </div>
     </header>
 
+    <!-- CUERPO PRINCIPAL -->
     <main class="main-content">
         
+        <!-- SECCIÓN IZQUIERDA: CONTROL DE BIOMASA -->
         <section class="pabellon-section">
-            <div class="section-header">
+            <div class="block-title-container">
                 <div>
                     <h2>🗃️ BIOMASA ASIGNADA IN-SITU</h2>
-                    <p class="section-subtitle">Gestión de constantes vitales de los especímenes del refugio</p>
+                    <p class="section-subtitle">Constantes vitales de los especímenes en el refugio</p>
                 </div>
                 <button id="btn-pasar-dia" class="btn-pasar-dia">Siguiente Ciclo [⌛]</button>
             </div>
             
+            <!-- Rejilla independiente donde se inyectan las tarjetas cuadradas -->
             <div id="contenedor-animales" class="animales-grid">
-                </div>
+                <!-- Inyectado dinámicamente por JavaScript -->
+            </div>
         </section>
 
+        <!-- SECCIÓN DERECHA: PANELES DE ACCIÓN -->
         <section class="sidebar-section">
             
-            <div class="panel-card panel-misiones">
-                <div class="panel-header-deco line-emerald"></div>
-                <h2>🛰️ LOGÍSTICA EXTRACCIÓN</h2>
-                <p class="panel-subtitle">Despliegue de unidades en zonas de exclusión contaminadas</p>
+            <!-- CUADRADO 1: DESPLIEGUE TÁCTICO (MISIONES) -->
+            <div class="panel-square border-emerald">
+                <div class="panel-square-header">
+                    <h2>🛰️ LOGÍSTICA EXTRACCIÓN</h2>
+                    <p class="panel-subtitle">Inserción en zonas de exclusión contaminadas</p>
+                </div>
                 
                 <form id="formulario-mision" class="mision-form">
                     <div class="form-group">
@@ -63,9 +99,9 @@
                     <div class="form-group">
                         <label>Vector de Inserción:</label>
                         <select id="select-zona-mision">
-                            <option value="supermercado">🏪 SUPERMERCADO ABANDONADO [RIESGO: BAJO]</option>
-                            <option value="farmacia">💊 RED DE FARMACIAS URBANA [RIESGO: MEDIO]</option>
-                            <option value="base-militar">🪖 PERÍMETRO BASE MILITAR [RIESGO: CRÍTICO]</option>
+                            <option value="supermercado">🏪 SUPERMERCADO [RIESGO: BAJO]</option>
+                            <option value="farmacia">💊 RED DE FARMACIAS [RIESGO: MEDIO]</option>
+                            <option value="base-militar">🪖 BASE MILITAR [RIESGO: CRÍTICO]</option>
                         </select>
                     </div>
 
@@ -73,10 +109,12 @@
                 </form>
             </div>
 
-            <div class="panel-card panel-logs">
-                <div class="panel-header-deco line-red"></div>
-                <h2>📟 LOG_SISTEMA.LOG</h2>
-                <p class="panel-subtitle">Monitorización de eventos del entorno y alertas locales</p>
+            <!-- CUADRADO 2: TERMINAL DE LOGS -->
+            <div class="panel-square border-red flex-grow-panel">
+                <div class="panel-square-header">
+                    <h2>📟 LOG_SISTEMA.LOG</h2>
+                    <p class="panel-subtitle">Monitorización de eventos del entorno en tiempo real</p>
+                </div>
                 
                 <div class="terminal-body">
                     <div id="log-sucesos" class="log-container">
@@ -89,6 +127,7 @@
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer class="main-footer">
         Z-SHELTER MAINFRAME // SECURE ENVIRONMENT // JUNIOR DAM PORTFOLIO
     </footer>
