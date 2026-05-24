@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-Shelter: Refugio de Animales Post-Apocalíptico</title>
+    <!-- Tailwind CSS CDN para estilar rápido mediante clases -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col">
+
+    <!-- 1. EL PANEL DE CONTROL DEL REFUGIO (HEADER) -->
+    <header class="bg-gray-800 border-b border-red-900 p-4 shadow-md">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">🧟🐾</span>
+                <h1 class="text-2xl font-bold tracking-wider text-red-500 uppercase">Z-Shelter</h1>
+            </div>
+            
+            <!-- Contadores de Recursos Globales -->
+            <div class="flex gap-6 text-lg font-semibold bg-gray-950 p-2 rounded-lg px-4 border border-gray-700">
+                <div>📅 Día: <span id="contador-dias" class="text-blue-400">1</span></div>
+                <div>🍖 Comida: <span id="recurso-comida" class="text-green-400">50</span> u.</div>
+                <div>💧 Agua: <span id="recurso-agua" class="text-cyan-400">50</span> u.</div>
+                <div>⚠️ Alerta: <span id="nivel-alerta" class="text-yellow-500 font-bold">BAJA</span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL DE LA APLICACIÓN -->
+    <main class="flex-grow container mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- 2. EL PABELLÓN DE ANIMALES (Ocupa 2 columnas en pantallas grandes) -->
+        <section class="lg:col-span-2 flex flex-col gap-4">
+            <h2 class="text-xl font-bold border-b border-gray-700 pb-2 text-red-400 flex justify-between items-center">
+                <span>🐾 Animales Refugiados</span>
+                <button id="btn-pasar-dia" class="bg-red-700 hover:bg-red-600 text-white text-sm px-3 py-1 rounded font-bold uppercase transition">
+                    Pasar Día Manual ⌛
+                </button>
+            </h2>
+            
+            <!-- Contenedor dinámico donde JavaScript inyectará las tarjetas de animales -->
+            <div id="contenedor-animales" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Las tarjetas se generarán dinámicamente desde el JS, aquí dejamos un ejemplo comentado -->
+                <!-- 
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-yellow-400">Max (Pastor Alemán)</h3>
+                            <span class="bg-green-900 text-green-300 text-xs px-2 py-0.5 rounded-full font-semibold">En Refugio</span>
+                        </div>
+                        <div class="space-y-1 text-sm text-gray-300">
+                            <div>❤️ Salud: <span class="font-bold text-green-400">100/100</span></div>
+                            <div>⚡ Energía: <span class="font-bold text-yellow-400">80/100</span></div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-xs py-1.5 rounded font-medium">🍖 Alimentar</button>
+                        <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-xs py-1.5 rounded font-medium">💧 Hidratar</button>
+                    </div>
+                </div> 
+                -->
+            </div>
+        </section>
+
+        <!-- 3. EL TABLÓN DE MISIONES DE EXPLORACIÓN + REGISTRO -->
+        <section class="flex flex-col gap-6">
+            
+            <!-- PANEL DE EXPOSICIÓN / MISIONES -->
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow flex flex-col gap-4">
+                <h2 class="text-xl font-bold text-red-400 border-b border-gray-700 pb-2">🚀 Misiones de Exploración</h2>
+                
+                <form id="formulario-mision" class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Seleccionar Explorador:</label>
+                        <select id="select-animal-mision" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-gray-200 focus:outline-none focus:border-red-500">
+                            <!-- Se rellenará con JavaScript con los animales disponibles -->
+                            <option value="">-- Elige un animal --</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1">Zona de Destino:</label>
+                        <select id="select-zona-mision" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-gray-200 focus:outline-none focus:border-red-500">
+                            <option value="supermercado">🏪 Supermercado Abandonado (Riesgo Bajo)</option>
+                            <option value="farmacia">💊 Farmacia de la Ciudad (Riesgo Medio)</option>
+                            <option value="base-militar">🪖 Base Militar Perimetral (Riesgo Alto)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2 rounded text-sm uppercase tracking-wider transition">
+                        Enviar a Explorar
+                    </button>
+                </form>
+            </div>
+
+            <!-- 4. EL LOG / HISTORIAL DE SUCESOS -->
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 shadow flex flex-col flex-grow min-h-[250px]">
+                <h2 class="text-xl font-bold text-red-400 border-b border-gray-700 pb-2 mb-2">📜 Registro de Sucesos</h2>
+                <!-- Contenedor con scroll para los mensajes del sistema -->
+                <div id="log-sucesos" class="flex-grow overflow-y-auto max-h-[300px] text-xs font-mono space-y-1.5 text-gray-400 pr-2">
+                    <p class="text-gray-500">[Sistema] Sistema de defensa en línea. Refugio operativo.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- PIE DE PÁGINA (FOOTER) -->
+    <footer class="bg-gray-950 text-center py-3 text-xs text-gray-500 border-t border-gray-800">
+        Desarrollado por <span class="text-gray-400 font-medium">Tu Nombre</span> - Junior DAM Porfolio
+    </footer>
+
+    <!-- Vinculación del script principal de lógica de la app -->
+    <script src="app.js"></script>
+</body>
+</html>
