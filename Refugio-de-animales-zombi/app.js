@@ -1,25 +1,26 @@
+// ==========================================
+// 🛠️ 1. DEFINICIÓN DE LA CLASE ANIMAL
+// ==========================================
 class Animal {
     constructor(id, nombre, especie, icono) {
         this.id = id;
         this.nombre = nombre;
         this.especie = especie;
         this.icono = icono;
-        this.salud = 100;      // Máximo 100
-        this.energia = 100;    // Máximo 100
-        this.estado = "En Refugio"; // "En Refugio" o "Explorando"
+        this.salud = 100;      
+        this.energia = 100;    
+        this.estado = "En Refugio"; 
     }
 
-    // Método para simular el desgaste diario
     desgasteDiario() {
         this.energia -= 15;
         if (this.energia <= 0) {
             this.energia = 0;
-            this.salud -= 20; // Si no tiene energía, empieza a perder salud
+            this.salud -= 20; 
         }
         if (this.salud <= 0) this.salud = 0;
     }
 
-    // Método para alimentar al animal
     alimentar() {
         if (this.salud > 0) {
             this.salud = Math.min(100, this.salud + 15);
@@ -29,7 +30,6 @@ class Animal {
         return false;
     }
 
-    // Método para hidratar al animal
     hidratar() {
         if (this.salud > 0) {
             this.energia = Math.min(100, this.energia + 25);
@@ -38,7 +38,10 @@ class Animal {
         return false;
     }
 }
-// Estado del refugio
+
+// ==========================================
+// 📊 2. ESTADO GLOBAL Y DATOS INICIALES
+// ==========================================
 const refugio = {
     dia: 1,
     comida: 50,
@@ -46,13 +49,16 @@ const refugio = {
     alerta: "BAJA"
 };
 
-// Nuestro "banco de datos" con instancias de la clase Animal
 const listaAnimales = [
     new Animal(1, "Max", "Pastor Alemán", "🐕"),
     new Animal(2, "Bigotes", "Gato Callejero", "🐈"),
     new Animal(3, "Simba", "León de Zoo", "🦁"),
     new Animal(4, "Coco", "Loro Inteligente", "🦜")
 ];
+
+// ==========================================
+// 🖥️ 3. CAPTURA DEL DOM (ELEMENTOS HTML)
+// ==========================================
 const domDias = document.getElementById("contador-dias");
 const domComida = document.getElementById("recurso-comida");
 const domAgua = document.getElementById("recurso-agua");
@@ -62,19 +68,19 @@ const domSelectAnimal = document.getElementById("select-animal-mision");
 const domFormMision = document.getElementById("formulario-mision");
 const domLog = document.getElementById("log-sucesos");
 const domBtnPasarDia = document.getElementById("btn-pasar-dia");
-// Actualiza los marcadores superiores
+
+// ==========================================
+// 🎨 4. FUNCIONES DE RENDERIZADO
+// ==========================================
 function actualizarMarcadores() {
     domDias.textContent = refugio.dia;
     domComida.textContent = refugio.comida;
     domAgua.textContent = refugio.agua;
     domAlerta.textContent = refugio.alerta;
-    
-    // Cambiar color de la alerta según el nivel
     domAlerta.className = refugio.alerta === "ALTA" ? "text-red-500 font-bold" : 
                           refugio.alerta === "MEDIA" ? "text-yellow-500 font-bold" : "text-green-500 font-bold";
 }
 
-// Añade un mensaje a la consola inferior de la web
 function agregarLog(mensaje, tipo = "sistema") {
     const colores = {
         sistema: "text-gray-400",
@@ -85,18 +91,15 @@ function agregarLog(mensaje, tipo = "sistema") {
     const nuevoLog = document.createElement("p");
     nuevoLog.className = colores[tipo];
     nuevoLog.textContent = `[Día ${refugio.dia}] - ${mensaje}`;
-    
     domLog.appendChild(nuevoLog);
-    domLog.scrollTop = domLog.scrollHeight; // Auto-scroll hacia abajo
+    domLog.scrollTop = domLog.scrollHeight; 
 }
 
-// Dibuja las tarjetas de los animales en el HTML
 function renderizarAnimales() {
-    domContenedor.innerHTML = ""; // Limpiamos el contenedor
-    domSelectAnimal.innerHTML = '<option value="">-- Elige un animal --</option>'; // Limpiamos el select de misiones
+    domContenedor.innerHTML = ""; 
+    domSelectAnimal.innerHTML = '<option value="">-- Elige un animal --</option>'; 
 
     listaAnimales.forEach(animal => {
-        // 1. Renderizar la tarjeta si el animal está vivo
         const estaVivo = animal.salud > 0;
         const colorTarjeta = estaVivo ? "bg-gray-800" : "bg-gray-950 opacity-50 border-red-900";
         
@@ -132,7 +135,6 @@ function renderizarAnimales() {
         `;
         domContenedor.innerHTML += tarjeta;
 
-        // 2. Rellenar el selector de misiones solo si está vivo y en el refugio
         if (estaVivo && animal.estado === "En Refugio") {
             const opcion = document.createElement("option");
             opcion.value = animal.id;
@@ -141,6 +143,10 @@ function renderizarAnimales() {
         }
     });
 }
+
+// ==========================================
+// 🎮 5. INTERACCIONES (BOTONES CUIDADOS)
+// ==========================================
 window.alimentarAnimal = function(id) {
     if (refugio.comida >= 1) {
         const animal = listaAnimales.find(a => a.id === id);
@@ -168,13 +174,12 @@ window.hidratarAnimal = function(id) {
         agregarLog("¡No tienes suficiente agua en el almacén!", "peligro");
     }
 };
-function iniciarApp() {
-    actualizarMarcadores();
-    renderizarAnimales();
-    agregarLog("Refugio operativo. Los zombis acechan afuera...", "sistema");
-}
+
+// ==========================================
+// 🚀 6. MISIONES DE EXPLORACIÓN
+// ==========================================
 domFormMision.addEventListener("submit", function(evento) {
-    evento.preventDefault(); // Evita que la página se recargue
+    evento.preventDefault(); 
 
     const idAnimal = parseInt(domSelectAnimal.value);
     const zona = document.getElementById("select-zona-mision").value;
@@ -185,122 +190,101 @@ domFormMision.addEventListener("submit", function(evento) {
     }
 
     const animal = listaAnimales.find(a => a.id === idAnimal);
-    
-    // Cambiamos el estado del animal para que no pueda hacer otra cosa
     animal.estado = "Explorando";
     agregarLog(`🚀 ${animal.nombre} ha salido hacia el/la ${zona.toUpperCase()}...`, "evento");
     renderizarAnimales();
 
-    // Simulamos que la misión tarda 5 segundos en completarse (Asincronía)
     setTimeout(() => {
         resolverMision(animal, zona);
     }, 5000);
 });
 
 function resolverMision(animal, zona) {
-    // Si el animal murió por un evento de cambio de día mientras exploraba
     if (animal.salud <= 0) return; 
 
     let comidaEncontrada = 0;
     let aguaEncontrada = 0;
     let dañoRecibido = 0;
 
-    // Algoritmia básica de riesgo/recompensa basada en la zona
     if (zona === "supermercado") {
-        comidaEncontrada = Math.floor(Math.random() * 15) + 5;  // 5 a 20
-        aguaEncontrada = Math.floor(Math.random() * 10) + 5;    // 5 a 15
-        dañoRecibido = Math.floor(Math.random() * 10);          // 0 a 10 (Poco daño)
+        comidaEncontrada = Math.floor(Math.random() * 15) + 5;  
+        aguaEncontrada = Math.floor(Math.random() * 10) + 5;    
+        dañoRecibido = Math.floor(Math.random() * 10);          
     } else if (zona === "farmacia") {
         comidaEncontrada = Math.floor(Math.random() * 10) + 5;
-        aguaEncontrada = Math.floor(Math.random() * 20) + 10;   // Más agua/medicinas
-        dañoRecibido = Math.floor(Math.random() * 25) + 5;      // 5 a 30 (Riesgo medio)
+        aguaEncontrada = Math.floor(Math.random() * 20) + 10;   
+        dañoRecibido = Math.floor(Math.random() * 25) + 5;      
     } else if (zona === "base-militar") {
-        comidaEncontrada = Math.floor(Math.random() * 40) + 20; // Mucha comida
+        comidaEncontrada = Math.floor(Math.random() * 40) + 20; 
         aguaEncontrada = Math.floor(Math.random() * 30) + 15;
-        dañoRecibido = Math.floor(Math.random() * 50) + 20;     // 20 a 70 (¡Muy peligroso!)
+        dañoRecibido = Math.floor(Math.random() * 50) + 20;     
     }
 
-    // Aplicamos los resultados al refugio y al animal
     refugio.comida += comidaEncontrada;
     refugio.agua += aguaEncontrada;
-    animal.salud -= dañoRecibido;
-    if (animal.salud < 0) animal.salud = 0;
-    
-    // El animal gasta energía por el viaje
+    animal.salud = Math.max(0, animal.salud - dañoRecibido);
     animal.energia = Math.max(0, animal.energia - 30);
     animal.estado = "En Refugio";
 
-    // Mostramos los resultados en la consola (Log)
     if (animal.salud <= 0) {
         agregarLog(`💀 TRAGEDIA: ${animal.nombre} fue emboscado en la misión y no logró sobrevivir.`, "peligro");
     } else {
         agregarLog(`✅ ${animal.nombre} ha vuelto. Encontró: 🍖x${comidaEncontrada}, 💧x${aguaEncontrada}. Sufrió ${dañoRecibido} de daño.`, "exito");
     }
 
-    // Volvemos a pintar todo con los nuevos datos
     actualizarMarcadores();
     renderizarAnimales();
 }
+
+// ==========================================
+// ⌛ 7. CAMBIO DE DÍA Y ATAQUES ZOMBI
+// ==========================================
 domBtnPasarDia.addEventListener("click", pasarDeDia);
 
 function pasarDeDia() {
     refugio.dia += 1;
-    
     agregarLog(`=== AMANECE EL DÍA ${refugio.dia} ===`, "evento");
 
-    // 1. Los animales consumen recursos y sufren desgaste diario
     listaAnimales.forEach(animal => {
         if (animal.salud > 0) {
-            // Cada animal vivo consume 1 de comida y 1 de agua
             if (refugio.comida >= 1 && refugio.agua >= 1) {
                 refugio.comida -= 1;
                 refugio.agua -= 1;
-                animal.desgasteDiario(); // Pierde energía
+                animal.desgasteDiario(); 
             } else {
-                // Si no hay suministros, el animal pierde mucha salud directamente
                 animal.salud = Math.max(0, animal.salud - 30);
                 agregarLog(`⚠️ ${animal.nombre} está pasando hambre/sed por falta de suministros.`, "peligro");
             }
         }
     });
 
-    // 2. Evento aleatorio: Ataque Zombi
     simularEventoZombi();
 
-    // 3. Modificar el nivel de alerta de forma aleatoria para el día siguiente
     const alertas = ["BAJA", "MEDIA", "ALTA"];
     refugio.alerta = alertas[Math.floor(Math.random() * alertas.length)];
 
-    // Actualizar la interfaz
     actualizarMarcadores();
     renderizarAnimales();
 }
 
 function simularEventoZombi() {
     const probabilidadAtaque = Math.random();
-    
-    // Si la alerta del día anterior era ALTA, hay más probabilidad de ataque
     const umbral = refugio.alerta === "ALTA" ? 0.4 : 0.7;
 
     if (probabilidadAtaque > umbral) {
         agregarLog("🚨 ¡UNA HORDA ZOMBI ATACA LOS MUROS DEL REFUGIO!", "peligro");
-        
-        // Elegimos un animal vivo al azar para que defienda el refugio
         const animalesVivos = listaAnimales.filter(a => a.salud > 0 && a.estado === "En Refugio");
         
         if (animalesVivos.length > 0) {
             const defensor = animalesVivos[Math.floor(Math.random() * animalesVivos.length)];
-            const dañoHorda = Math.floor(Math.random() * 30) + 10; // 10 a 40 de daño
-            
+            const dañoHorda = Math.floor(Math.random() * 30) + 10; 
             defensor.salud = Math.max(0, defensor.salud - dañoHorda);
-            
             agregarLog(`🛡️ ${defensor.nombre} luchó en primera línea para defender el refugio y sufrió ${dañoHorda} de daño.`, "sistema");
             
             if (defensor.salud <= 0) {
                 agregarLog(`💀 ${defensor.nombre} ha muerto defendiendo las puertas.`, "peligro");
             }
         } else {
-            // Si no quedan animales para defender, los zombis destruyen el almacén
             const perdidaComida = Math.min(refugio.comida, 15);
             const perdidaAgua = Math.min(refugio.agua, 15);
             refugio.comida -= perdidaComida;
@@ -311,5 +295,14 @@ function simularEventoZombi() {
         agregarLog("🪶 La noche ha sido tranquila. Ningún zombi se ha acercado.", "sistema");
     }
 }
-// Arrancar el juego
+
+// ==========================================
+// 🏁 8. INICIALIZACIÓN
+// ==========================================
+function iniciarApp() {
+    actualizarMarcadores();
+    renderizarAnimales();
+    agregarLog("Refugio operativo. Los zombis acechan afuera...", "sistema");
+}
+
 iniciarApp();
